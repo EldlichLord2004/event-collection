@@ -1,38 +1,144 @@
-.App {
-  text-align: center;
+/* ---- Cài đặt chung cho toàn trang ---- */
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  background-color: #ffffff;
+  color: #000000;
+  
+  /* === CHẶN BÔI ĐEN VĂN BẢN (TEXT SELECTION) === */
+  -webkit-user-select: none; /* Safari, Chrome */
+  -moz-user-select: none;    /* Firefox */
+  -ms-user-select: none;     /* IE/Edge */
+  user-select: none;         /* Chuẩn chung */
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+/* === CHẶN KÉO RÊ ẢNH BẰNG CHUỘT (IMAGE DRAGGING) === */
+img {
+  -webkit-user-drag: none;
+  user-drag: none;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.app {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  box-sizing: border-box;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+/* ---- Thanh menu Lọc (Unit) ---- */
+header {
   display: flex;
-  flex-direction: column;
+  justify-content: center;
+  margin-bottom: 40px;
+}
+
+nav {
+  background-color: #ddded4;
+  border-radius: 50px;
+  padding: 8px;
+  display: inline-flex;
+  align-items: center; /* Căn các nút theo chiều dọc */
+  gap: 10px;
+}
+
+nav button {
+  background: none;
+  border: none;
+  color: #000000;
+  font-size: 16px;
+  font-weight: bold;
+  padding: 8px 15px; /* Điều chỉnh padding cho phù hợp */
+  border-radius: 40px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  height: 40px; /* Cố định chiều cao cho các nút */
+  display: flex;
   align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
 }
 
-.App-link {
-  color: #61dafb;
+nav button.active {
+  background-color: #6b6b6b;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+nav button:hover {
+  background-color: #717171;
+}
+
+/* === CSS MỚI: ĐỊNH DẠNG CHO CÁC LOGO TRONG NÚT BẤM === */
+.unit-logo {
+  height: 25px; /* Chiều cao của logo */
+  width: auto;  /* Chiều rộng tự động theo tỷ lệ */
+  display: block; /* Xóa khoảng trống thừa dưới ảnh */
+}
+
+
+/* ---- Lưới hiển thị các ảnh ---- */
+.loading-text {
+  font-size: 18px;
+  text-align: center;
+  margin-top: 50px;
+}
+
+.collection-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 50px; 
+}
+
+.collection-card {
+  text-align: left;
+}
+
+.image-container {
+  width: 100%;
+  aspect-ratio: 2 / 1;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.image-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.card-info {
+  margin-top: 10px;
+}
+
+.card-info h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.card-info .creator {
+  margin: 4px 0 0 0;
+  font-size: 14px;
+  color: #555;
+}
+
+/* === NÚT KHÔNG CÓ LOGO (mix) → HIỆN TRỐNG === */
+.unit-blank {
+  display: block;
+  height: 25px;        /* Cùng chiều cao với logo */
+  line-height: 25px;
+  font-size: 14px;
+  color: #000000;  /* ⭐ Chữ trong suốt = trống */
+  min-width: 30px;     /* Đảm bảo nút có kích thước tối thiểu */
+}
+
+/* Nút active - nền tối */
+nav button.active {
+  background-color: #636363;
+  color: #ffffff;          /* ⭐ Chữ trắng khi được chọn */
+}
+
+/* Nút active + chữ blank (Mix) cũng trắng */
+nav button.active .unit-blank {
+  color: #ffffff;          /* ⭐ Chữ Mix trắng khi được chọn */
 }
