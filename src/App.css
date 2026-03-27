@@ -5,8 +5,7 @@ body {
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
   min-height: 100vh;
-  background-color: #f5f1fb;
-  background-image: linear-gradient(90deg, #eef2ff 0%, #f8f0ff 35%, #fff2fb 65%, #edf8ff 100%);
+  background-color: #eef3fb;
   color: #000000;
   
   /* === CHẶN BÔI ĐEN VĂN BẢN (TEXT SELECTION) === */
@@ -21,24 +20,25 @@ body::after {
   content: "";
   position: fixed;
   top: 0;
+  left: 0;
+  right: 0;
   bottom: 0;
-  width: calc((100vw - 1200px) / 2);
   pointer-events: none;
   z-index: -1;
 }
 
 body::before {
-  left: 0;
-  background:
-    radial-gradient(circle at 20% 20%, rgba(161, 122, 255, 0.18) 0, rgba(161, 122, 255, 0) 45%),
-    linear-gradient(180deg, #eef2ff 0%, #f8f0ff 100%);
+  background-image: url("./LogoUnit/655065811_941741794924969_5766578969985938936_n.jpg");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+  filter: blur(2px) saturate(0.95);
+  transform: scale(1.03);
+  opacity: 0.45;
 }
 
 body::after {
-  right: 0;
-  background:
-    radial-gradient(circle at 80% 20%, rgba(255, 120, 192, 0.16) 0, rgba(255, 120, 192, 0) 45%),
-    linear-gradient(180deg, #fff2fb 0%, #edf8ff 100%);
+  background: rgba(244, 248, 255, 0.58);
 }
 
 /* === CHẶN KÉO RÊ ẢNH BẰNG CHUỘT (IMAGE DRAGGING) === */
