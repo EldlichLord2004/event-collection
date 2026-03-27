@@ -160,7 +160,6 @@ const App = () => {
   const [filteredData, setFilteredData] = useState([]);
   const [activeUnit, setActiveUnit] = useState("All");
   const [loading, setLoading] = useState(true);
-  const [zoomLevel, setZoomLevel] = useState(100);
 
   const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQZCwUxhLR9bE6QOK1g2tXQKzDeB1SqoqH95QDqBS5cbeY9_WQuGn8SfdWVibOa2CzrVkNYLkIiXCZ7/pub?gid=0&single=true&output=tsv";
 
@@ -206,86 +205,56 @@ const App = () => {
     }
   };
 
-  const increaseZoom = () => {
-    setZoomLevel((prev) => Math.min(prev + 10, 200));
-  };
-
-  const decreaseZoom = () => {
-    setZoomLevel((prev) => Math.max(prev - 10, 50));
-  };
-
-  const resetZoom = () => {
-    setZoomLevel(100);
-  };
-
-  const zoomScale = zoomLevel / 100;
-
   return (
     <div className="app" onContextMenu={(e) => e.preventDefault()}>
-      <div className="zoom-controls" aria-label="Zoom controls">
-        <button type="button" onClick={decreaseZoom}>-</button>
-        <button type="button" className="zoom-value" onClick={resetZoom}>
-          {zoomLevel}%
-        </button>
-        <button type="button" onClick={increaseZoom}>+</button>
-      </div>
+      <header>
+        <nav>
+          {/* ⭐ DÙNG UNIT_ORDER CỐ ĐỊNH THAY VÌ DYNAMIC */}
+          {UNIT_ORDER.map((unit) => (
+            <button
+              key={unit}
+              className={activeUnit === unit ? "active" : ""}
+              onClick={() => handleFilter(unit)}
+            >
+              {unit === "All" ? (
+                // "All" → hiện chữ
+                "All"
+              ) : unitLogos[unit] ? (
+                // Có logo → hiện ảnh
+                <img src={unitLogos[unit]} alt={unit} className="unit-logo" />
+              ) : (
+                // Không có logo (mix) → hiện trống, chỉ có khoảng trắng
+                <span className="unit-blank">{unit}</span>
+              )}
+            </button>
+          ))}
+        </nav>
+      </header>
 
-      <div
-        className="zoom-content"
-        style={{
-          transform: `scale(${zoomScale})`,
-          width: `${100 / zoomScale}%`,
-        }}
-      >
-        <header>
-          <nav>
-            {/* ⭐ DÙNG UNIT_ORDER CỐ ĐỊNH THAY VÌ DYNAMIC */}
-            {UNIT_ORDER.map((unit) => (
-              <button
-                key={unit}
-                className={activeUnit === unit ? "active" : ""}
-                onClick={() => handleFilter(unit)}
-              >
-                {unit === "All" ? (
-                  // "All" → hiện chữ
-                  "All"
-                ) : unitLogos[unit] ? (
-                  // Có logo → hiện ảnh
-                  <img src={unitLogos[unit]} alt={unit} className="unit-logo" />
-                ) : (
-                  // Không có logo (mix) → hiện trống, chỉ có khoảng trắng
-                  <span className="unit-blank">{unit}</span>
-                )}
-              </button>
-            ))}
-          </nav>
-        </header>
-
-        <main>
-          {loading ? (
-            <p className="loading-text">Đang tải dữ liệu từ Google Sheet...</p>
-          ) : (
-            <div className="collection-grid">
-              {filteredData.map((item) => (
-                <div className="collection-card" key={item.STT}>
-                  <div className="image-container">
-                    {/* THÊM draggable={false} VÀO ĐÂY ĐỂ CHẶN KÉO ẢNH */}
-                    <img
-                      src={item.ImageLink}
-                      alt={item.EventName}
-                      draggable={false}
-                    />
-                  </div>
-                  <div className="card-info">
-                    <h3>{item.EventName}</h3>
-                    <p className="creator">cre:</p>
-                  </div>
+      <main>
+        {loading ? (
+          <p className="loading-text">Đang tải dữ liệu từ Google Sheet...</p>
+        ) : (
+          <div className="collection-grid">
+            {filteredData.map((item) => (
+              <div className="collection-card" key={item.STT}>
+                <div className="image-container">
+                  {/* THÊM draggable={false} VÀO ĐÂY ĐỂ CHẶN KÉO ẢNH */}
+                  <img
+                    src={item.ImageLink}
+                    alt={item.EventName}
+                    draggable={false}
+                  />
                 </div>
-              ))}
-            </div>
-          )}
-        </main>
-      </div>
+                <div className="card-info">
+                  <h3>{item.EventName}</h3>
+                  <p className="creator">cre:</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </main>
     </div>
   );
 };
