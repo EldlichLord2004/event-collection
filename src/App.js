@@ -206,9 +206,9 @@ const App = () => {
   };
 
   return (
-    <div className="app" onContextMenu={(e) => e.preventDefault()}>
-      <header>
-        <nav>
+    <div onContextMenu={(e) => e.preventDefault()}>
+      <div className="toolbar-shell">
+        <nav className="unit-toolbar">
           {/* ⭐ DÙNG UNIT_ORDER CỐ ĐỊNH THAY VÌ DYNAMIC */}
           {UNIT_ORDER.map((unit) => (
             <button
@@ -229,32 +229,34 @@ const App = () => {
             </button>
           ))}
         </nav>
-      </header>
+      </div>
 
-      <main>
-        {loading ? (
-          <p className="loading-text">Đang tải dữ liệu từ Google Sheet...</p>
-        ) : (
-          <div className="collection-grid">
-            {filteredData.map((item) => (
-              <div className="collection-card" key={item.STT}>
-                <div className="image-container">
-                  {/* THÊM draggable={false} VÀO ĐÂY ĐỂ CHẶN KÉO ẢNH */}
-                  <img
-                    src={item.ImageLink}
-                    alt={item.EventName}
-                    draggable={false}
-                  />
+      <div className="app">
+        <main>
+          {loading ? (
+            <p className="loading-text">Đang tải dữ liệu từ Google Sheet...</p>
+          ) : (
+            <div className="collection-grid">
+              {filteredData.map((item) => (
+                <div className="collection-card" key={item.STT}>
+                  <div className="image-container">
+                    {/* THÊM draggable={false} VÀO ĐÂY ĐỂ CHẶN KÉO ẢNH */}
+                    <img
+                      src={item.ImageLink}
+                      alt={item.EventName}
+                      draggable={false}
+                    />
+                  </div>
+                  <div className="card-info">
+                    <h3>{item.EventName}</h3>
+                    <p className="creator">cre:</p>
+                  </div>
                 </div>
-                <div className="card-info">
-                  <h3>{item.EventName}</h3>
-                  <p className="creator">cre:</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-      </main>
+              ))}
+            </div>
+          )}
+        </main>
+      </div>
     </div>
   );
 };
