@@ -153,7 +153,7 @@ const unitLogos = {
 };
 
 // ⭐ THỨ TỰ CỐ ĐỊNH: All đầu tiên, mix cuối cùng
-const UNIT_ORDER = ["All", "vs", "ln", "mmj", "wxs", "vbs", "niigo","Mix"];
+const UNIT_ORDER = ["All", "vs", "ln", "mmj", "vbs", "wxs", "niigo","Mix"];
 
 const App = () => {
   const [data, setData] = useState([]);
