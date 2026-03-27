@@ -5,7 +5,8 @@ body {
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
   min-height: 100vh;
-  background-color: #ffffff;
+  background-color: #f5f1fb;
+  background-image: linear-gradient(90deg, #eef2ff 0%, #f8f0ff 35%, #fff2fb 65%, #edf8ff 100%);
   color: #000000;
   
   /* === CHẶN BÔI ĐEN VĂN BẢN (TEXT SELECTION) === */
@@ -52,7 +53,7 @@ img {
   margin: 0 auto;
   padding: 16px 20px 20px;
   box-sizing: border-box;
-  background-color: transparent;
+  background-color: #ffffff;
 }
 
 .toolbar-shell {
