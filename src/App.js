@@ -129,7 +129,7 @@
 
 // export default App;
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Papa from "papaparse";
 import "./App.css";
 
@@ -140,6 +140,7 @@ import logoMmj from './LogoUnit/mmj.png';
 import logoNiigo from './LogoUnit/niigo.png';
 import logoVbs from './LogoUnit/vbs.png';
 import logoWxs from './LogoUnit/wxs.png';
+import logoVideo from './LogoUnit/Logo video.png';
 
 // === BẢN ĐỒ LOGO ===
 const unitLogos = {
@@ -160,6 +161,10 @@ const App = () => {
   const [filteredData, setFilteredData] = useState([]);
   const [activeUnit, setActiveUnit] = useState("All");
   const [loading, setLoading] = useState(true);
+  const [showMiniLogo, setShowMiniLogo] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const topBannerRef = useRef(null);
+  const mobileMenuRef = useRef(null);
 
   const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQZCwUxhLR9bE6QOK1g2tXQKzDeB1SqoqH95QDqBS5cbeY9_WQuGn8SfdWVibOa2CzrVkNYLkIiXCZ7/pub?gid=0&single=true&output=tsv";
 
@@ -195,6 +200,43 @@ const App = () => {
     return () => clearInterval(interval);
   }, [activeUnit]);
 
+  useEffect(() => {
+    const handleScroll = () => {
+      const isMobile = window.innerWidth <= 768;
+      if (!isMobile) {
+        setShowMiniLogo(false);
+        return;
+      }
+
+      const el = topBannerRef.current;
+      if (!el) return;
+
+      // Khi đáy banner lớn đã đi lên đủ cao thì hiện logo nhỏ
+      const shouldShow = el.getBoundingClientRect().bottom <= 120;
+      setShowMiniLogo((prev) => (prev === shouldShow ? prev : shouldShow));
+    };
+
+    handleScroll();
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  useEffect(() => {
+    const onPointerDown = (e) => {
+      if (!mobileMenuOpen) return;
+      const panel = mobileMenuRef.current;
+      if (!panel) return;
+      if (!panel.contains(e.target)) setMobileMenuOpen(false);
+    };
+
+    document.addEventListener("mousedown", onPointerDown);
+    document.addEventListener("touchstart", onPointerDown, { passive: true });
+    return () => {
+      document.removeEventListener("mousedown", onPointerDown);
+      document.removeEventListener("touchstart", onPointerDown);
+    };
+  }, [mobileMenuOpen]);
+
   const handleFilter = (unit) => {
     setActiveUnit(unit);
     if (unit === "All") {
@@ -207,34 +249,82 @@ const App = () => {
 
   return (
     <div onContextMenu={(e) => e.preventDefault()}>
-      <div className="toolbar-shell">
-        <nav className="unit-toolbar">
-          {/* ⭐ DÙNG UNIT_ORDER CỐ ĐỊNH THAY VÌ DYNAMIC */}
-          {UNIT_ORDER.map((unit) => (
-            <button
-              key={unit}
-              className={activeUnit === unit ? "active" : ""}
-              onClick={() => handleFilter(unit)}
-            >
-              {unit === "All" ? (
-                // "All" → hiện chữ
-                "All"
-              ) : unitLogos[unit] ? (
-                // Có logo → hiện ảnh
-                <img src={unitLogos[unit]} alt={unit} className="unit-logo" />
-              ) : (
-                // Không có logo (mix) → hiện trống, chỉ có khoảng trắng
-                <span className="unit-blank">{unit}</span>
-              )}
-            </button>
-          ))}
-        </nav>
+      <div className="top-banner" ref={topBannerRef}>
+        <img className="top-banner-img" src={logoVideo} alt="Top logo" draggable={false} />
       </div>
 
       <div className="app">
+        <div className="toolbar-shell">
+          <img
+            className={showMiniLogo ? "mini-logo mini-logo--show" : "mini-logo"}
+            src={logoVideo}
+            alt="Mini logo"
+            draggable={false}
+          />
+
+          <nav className="unit-toolbar unit-toolbar--desktop">
+            {UNIT_ORDER.map((unit) => (
+              <button
+                key={unit}
+                className={activeUnit === unit ? "active" : ""}
+                onClick={() => handleFilter(unit)}
+              >
+                {unit === "All" ? (
+                  "All"
+                ) : unitLogos[unit] ? (
+                  <img src={unitLogos[unit]} alt={unit} className="unit-logo" />
+                ) : (
+                  <span className="unit-blank">{unit}</span>
+                )}
+              </button>
+            ))}
+          </nav>
+
+          <div className="mobile-menu-area" ref={mobileMenuRef}>
+            <button
+              type="button"
+              className="mobile-menu-btn"
+              aria-label="Open unit list"
+              aria-expanded={mobileMenuOpen}
+              onClick={() => setMobileMenuOpen((v) => !v)}
+            >
+              <span className="burger" aria-hidden="true">
+                <span />
+                <span />
+                <span />
+              </span>
+            </button>
+
+            <div
+              className={mobileMenuOpen ? "mobile-menu-panel mobile-menu-panel--open" : "mobile-menu-panel"}
+            >
+              <nav className="unit-toolbar unit-toolbar--mobile">
+                {UNIT_ORDER.map((unit) => (
+                  <button
+                    key={unit}
+                    className={activeUnit === unit ? "active" : ""}
+                    onClick={() => {
+                      handleFilter(unit);
+                      setMobileMenuOpen(false);
+                    }}
+                  >
+                    {unit === "All" ? (
+                      "All"
+                    ) : unitLogos[unit] ? (
+                      <img src={unitLogos[unit]} alt={unit} className="unit-logo" />
+                    ) : (
+                      <span className="unit-blank">{unit}</span>
+                    )}
+                  </button>
+                ))}
+              </nav>
+            </div>
+          </div>
+        </div>
+
         <main>
           {loading ? (
-            <p className="loading-text">Đang tải dữ liệu từ Google Sheet...</p>
+            <p className="loading-text">Đang tải dữ liệu...</p>
           ) : (
             <div className="collection-grid">
               {filteredData.map((item) => (
