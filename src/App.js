@@ -129,9 +129,10 @@
 
 // export default App;
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import Papa from "papaparse";
 import "./App.css";
+import { EventDetailModal } from "./components/EventDetailModal";
 
 // === IMPORT LOGO ===
 import logoLn from './LogoUnit/ln.png';
@@ -163,8 +164,11 @@ const App = () => {
   const [loading, setLoading] = useState(true);
   const [showMiniLogo, setShowMiniLogo] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [selectedEvent, setSelectedEvent] = useState(null);
   const topBannerRef = useRef(null);
   const mobileMenuRef = useRef(null);
+
+  const closeEventModal = useCallback(() => setSelectedEvent(null), []);
 
   const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQZCwUxhLR9bE6QOK1g2tXQKzDeB1SqoqH95QDqBS5cbeY9_WQuGn8SfdWVibOa2CzrVkNYLkIiXCZ7/pub?gid=0&single=true&output=tsv";
 
@@ -182,6 +186,14 @@ const App = () => {
         setData(validData);
         if (activeUnit === "All") {
           setFilteredData(validData);
+        } else {
+          setFilteredData(
+            validData.filter(
+              (item) =>
+                item.Unit &&
+                item.Unit.toLowerCase() === activeUnit.toLowerCase()
+            )
+          );
         }
 
         setLoading(false);
@@ -247,13 +259,23 @@ const App = () => {
     }
   };
 
-  return (
-    <div onContextMenu={(e) => e.preventDefault()}>
-      <div className="top-banner" ref={topBannerRef}>
-        <img className="top-banner-img" src={logoVideo} alt="Top logo" draggable={false} />
-      </div>
+  const resultCount = filteredData.length;
 
-      <div className="app">
+  return (
+    <div className="page-root" onContextMenu={(e) => e.preventDefault()}>
+      <div className="content-panel">
+        <header className="site-top">
+          <div className="top-banner" ref={topBannerRef}>
+            <img
+              className="top-banner-img"
+              src={logoVideo}
+              alt="Project Sekai Vietsub — logo gallery"
+              draggable={false}
+            />
+          </div>
+        </header>
+
+        <div className="app">
         <div className="toolbar-shell">
           <img
             className={showMiniLogo ? "mini-logo mini-logo--show" : "mini-logo"}
@@ -322,31 +344,56 @@ const App = () => {
           </div>
         </div>
 
-        <main>
+        <main className="gallery-main">
+          <div className="gallery-head">
+            <p className="gallery-meta" aria-live="polite">
+              {loading ? "Đang tải…" : `${resultCount} mục`}
+            </p>
+          </div>
+
           {loading ? (
-            <p className="loading-text">Đang tải dữ liệu...</p>
+            <div className="loading-block" role="status" aria-busy="true">
+              <span className="loading-spinner" aria-hidden="true" />
+              <p className="loading-text">Đang tải dữ liệu từ Google Sheet…</p>
+            </div>
+          ) : resultCount === 0 ? (
+            <p className="empty-state">Không có logo trong bộ lọc này.</p>
           ) : (
-            <div className="collection-grid">
-              {filteredData.map((item) => (
-                <div className="collection-card" key={item.STT}>
+            <div className="collection-grid" key={activeUnit}>
+              {filteredData.map((item, index) => (
+                <button
+                  type="button"
+                  className="collection-card"
+                  key={
+                    item.STT != null && String(item.STT).trim() !== ""
+                      ? String(item.STT)
+                      : `${item.ImageLink}-${index}`
+                  }
+                  onClick={() => setSelectedEvent(item)}
+                  aria-label={`${item.EventName} — xem chi tiết`}
+                >
                   <div className="image-container">
-                    {/* THÊM draggable={false} VÀO ĐÂY ĐỂ CHẶN KÉO ẢNH */}
                     <img
                       src={item.ImageLink}
-                      alt={item.EventName}
+                      alt=""
                       draggable={false}
+                      loading="lazy"
                     />
                   </div>
                   <div className="card-info">
-                    <h3>{item.EventName}</h3>
-                    <p className="creator">cre:</p>
+                    <h3 className="card-title">{item.EventName}</h3>
                   </div>
-                </div>
+                </button>
               ))}
             </div>
           )}
         </main>
+        </div>
       </div>
+
+      {selectedEvent ? (
+        <EventDetailModal event={selectedEvent} onClose={closeEventModal} />
+      ) : null}
     </div>
   );
 };
