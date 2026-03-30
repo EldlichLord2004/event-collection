@@ -1,134 +1,3 @@
-// import React, { useState, useEffect } from "react";
-// import Papa from "papaparse";
-// import "./App.css";
-
-// // === BƯỚC 1: IMPORT CÁC FILE ẢNH LOGO VÀO ĐÂY ===
-// // (Đảm bảo đường dẫn './LogoUnit/...' là chính xác)
-// import logoLn from './LogoUnit/ln.png';
-// import logoVs from './LogoUnit/vs.png';
-// import logoMmj from './LogoUnit/mmj.png';
-// import logoNiigo from './LogoUnit/niigo.png';
-// import logoVbs from './LogoUnit/vbs.png';
-// import logoWxs from './LogoUnit/wxs.png';
-
-
-// // === BƯỚC 2: TẠO "BẢN ĐỒ" KẾT NỐI TÊN UNIT VỚI BIẾN LOGO ===
-// const unitLogos = {
-//   vs: logoVs,
-//   ln: logoLn,
-//   mmj: logoMmj,
-//   wxs: logoWxs,
-//   vbs: logoVbs,
-//   niigo: logoNiigo,
-// };
-
-
-// const App = () => {
-//   const [data, setData] = useState([]);
-//   const [filteredData, setFilteredData] = useState([]);
-//   const [units, setUnits] = useState([]);
-//   const [activeUnit, setActiveUnit] = useState("All");
-//   const [loading, setLoading] = useState(true);
-
-//   const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQZCwUxhLR9bE6QOK1g2tXQKzDeB1SqoqH95QDqBS5cbeY9_WQuGn8SfdWVibOa2CzrVkNYLkIiXCZ7/pub?gid=0&single=true&output=tsv"; // Nhớ thay link của bạn vào đây
-
-//   // ... (Toàn bộ code xử lý logic useEffect và fetchData giữ nguyên, không cần thay đổi)
-//   const fetchData = () => {
-//     console.log("Đang kiểm tra dữ liệu mới từ Google Sheet...");
-//     Papa.parse(SHEET_CSV_URL, {
-//       download: true,
-//       header: true,
-//       complete: (results) => {
-//         const sheetData = results.data;
-//         const validData = sheetData.filter(
-//           (item) => item.EventName && item.ImageLink
-//         );
-
-//         setData(validData);
-//         if (activeUnit === "All") {
-//           setFilteredData(validData);
-//         }
-
-//         const uniqueUnits = [
-//           ...new Set(validData.map((item) => item.Unit)),
-//         ].filter(Boolean);
-//         setUnits(["All", ...uniqueUnits]);
-        
-//         setLoading(false);
-//       },
-//       error: (error) => {
-//         console.error("Lỗi khi tải dữ liệu từ Google Sheet:", error);
-//       },
-//     });
-//   };
-
-//   useEffect(() => {
-//     fetchData();
-//     const interval = setInterval(() => {
-//       fetchData();
-//     }, 300000); 
-//     return () => clearInterval(interval);
-//   }, [activeUnit]);
-
-//   const handleFilter = (unit) => {
-//     setActiveUnit(unit);
-//     if (unit === "All") {
-//       setFilteredData(data);
-//     } else {
-//       const filtered = data.filter((item) => item.Unit === unit);
-//       setFilteredData(filtered);
-//     }
-//   };
-
-//   return (
-//     <div className="app">
-//       <header>
-//         <nav>
-//           {/* === BƯỚC 3: SỬA LẠI VÒNG LẶP ĐỂ HIỂN THỊ LOGO === */}
-//           {units.map((unit) => (
-//             <button
-//               key={unit}
-//               className={activeUnit === unit ? "active" : ""}
-//               onClick={() => handleFilter(unit)}
-//             >
-//               {unitLogos[unit] ? (
-//                 // Nếu unit có trong "bản đồ" unitLogos -> hiện ảnh
-//                 <img src={unitLogos[unit]} alt={unit} className="unit-logo" />
-//               ) : (
-//                 // Nếu không (trường hợp là "All") -> hiện chữ
-//                 unit
-//               )}
-//             </button>
-//           ))}
-//         </nav>
-//       </header>
-
-//       <main>
-//         {/* ... (Phần main hiển thị ảnh không thay đổi) ... */}
-//         {loading ? (
-//           <p className="loading-text">Đang tải dữ liệu từ Google Sheet...</p>
-//         ) : (
-//           <div className="collection-grid">
-//             {filteredData.map((item) => (
-//               <div className="collection-card" key={item.STT}>
-//                 <div className="image-container">
-//                   <img src={item.ImageLink} alt={item.EventName} />
-//                 </div>
-//                 <div className="card-info">
-//                   <h3>{item.EventName}</h3>
-//                   <p className="creator">cre:</p>
-//                 </div>
-//               </div>
-//             ))}
-//           </div>
-//         )}
-//       </main>
-//     </div>
-//   );
-// };
-
-// export default App;
-
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import Papa from "papaparse";
 import "./App.css";
@@ -174,7 +43,7 @@ const App = () => {
   const closeEventModal = useCallback(() => setSelectedEvent(null), []);
 
   const fetchData = useCallback(() => {
-    console.log("Đang kiểm tra dữ liệu mới từ Google Sheet...");
+    console.log("Đang kiểm tra dữ liệu mới...");
     Papa.parse(SHEET_CSV_URL, {
       download: true,
       header: true,
@@ -200,7 +69,7 @@ const App = () => {
         setLoading(false);
       },
       error: (error) => {
-        console.error("Lỗi khi tải dữ liệu từ Google Sheet:", error);
+        console.error("Lỗi khi tải dữ liệu: ", error);
       },
     });
   }, [activeUnit]);
@@ -355,7 +224,7 @@ const App = () => {
           {loading ? (
             <div className="loading-block" role="status" aria-busy="true">
               <span className="loading-spinner" aria-hidden="true" />
-              <p className="loading-text">Đang tải dữ liệu từ Google Sheet…</p>
+              <p className="loading-text">Đang tải dữ liệu ...</p>
             </div>
           ) : resultCount === 0 ? (
             <p className="empty-state">Không có logo trong bộ lọc này.</p>
