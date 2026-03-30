@@ -37,7 +37,7 @@ body {
   margin: 0;
   font-family: var(--font-text);
   min-height: 100vh;
-  background-color: #c5d4ec;
+  background-color: transparent;
   color: var(--color-text);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -48,30 +48,41 @@ body {
   user-select: none;
 }
 
-body::before,
-body::after {
-  content: "";
+/* ---- Dynamic wallpaper layers (unit hover/click) ---- */
+.bg-root {
   position: fixed;
   inset: 0;
-  pointer-events: none;
   z-index: -1;
+  pointer-events: none;
 }
 
-body::before {
-  background-image: url("./LogoUnit/655065811_941741794924969_5766578969985938936_n.jpg");
+.bg-layer {
+  position: absolute;
+  inset: 0;
   background-repeat: no-repeat;
   background-position: center top;
   background-size: cover;
+  opacity: 0;
+  transition: opacity 560ms cubic-bezier(0.16, 1, 0.3, 1);
+  /* Giữ nét ảnh nền */
+  filter: none;
+  transform: none;
+  will-change: opacity;
+}
+
+.bg-layer--top {
   opacity: 1;
 }
 
-body::after {
-  /* Lớp phủ rất nhẹ — giữ ảnh nền rõ, tránh chói nhẹ trên một số màn hình */
-  background: rgba(248, 250, 252, 0.12);
+.bg-overlay {
+  position: absolute;
+  inset: 0;
+  /* Lớp phủ nhẹ giúp chữ/thẻ đọc dễ hơn */
+  background: rgba(248, 250, 252, 0.05);
 }
 
 @media (min-width: 769px) {
-  body::before {
+  .bg-layer {
     background-attachment: fixed;
   }
 }

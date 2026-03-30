@@ -12,6 +12,14 @@ import logoVbs from './LogoUnit/vbs.png';
 import logoWxs from './LogoUnit/wxs.png';
 import logoVideo from './LogoUnit/Logo video.png';
 
+// === BACKGROUND (dynamic wallpaper) ===
+import bgDefault from "./bg/655065811_941741794924969_5766578969985938936_n.jpg";
+import bgLn from "./bg/ln_bg.png";
+import bgMmj from "./bg/mmj_bg.png";
+import bgNiigo from "./bg/n25_bg.png";
+import bgVbs from "./bg/vbs_bg.png";
+import bgWxs from "./bg/wxs_bg.png";
+
 // === BẢN ĐỒ LOGO ===
 const unitLogos = {
   vs: logoVs,
@@ -37,10 +45,33 @@ const App = () => {
   const [showMiniLogo, setShowMiniLogo] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState(null);
+  const [hoverUnit, setHoverUnit] = useState(null);
+
+  // 2 lớp nền để cross-fade mượt khi đổi wallpaper
+  const [bg0, setBg0] = useState(bgDefault);
+  const [bg1, setBg1] = useState(bgDefault);
+  const [bgTop, setBgTop] = useState(0);
+  const visibleBgUrlRef = useRef(bgDefault);
   const topBannerRef = useRef(null);
   const mobileMenuRef = useRef(null);
 
   const closeEventModal = useCallback(() => setSelectedEvent(null), []);
+
+  const getBgUrl = useCallback((unitRaw) => {
+    const key = unitRaw == null ? "" : String(unitRaw).trim().toLowerCase();
+
+    // mapping theo yêu cầu:
+    // - i / n25 => niigo
+    // - vs / all / mix => dùng nền mặc định
+    if (!key) return bgDefault;
+    if (key === "vs" || key === "all" || key === "mix") return bgDefault;
+    if (key === "ln") return bgLn;
+    if (key === "mmj") return bgMmj;
+    if (key === "vbs") return bgVbs;
+    if (key === "wxs") return bgWxs;
+    if (key === "niigo" || key === "n25" || key === "i") return bgNiigo;
+    return bgDefault;
+  }, []);
 
   const fetchData = useCallback(() => {
     console.log("Đang kiểm tra dữ liệu mới...");
@@ -120,6 +151,8 @@ const App = () => {
   }, [mobileMenuOpen]);
 
   const handleFilter = (unit) => {
+    // Khi click toolbar, bỏ trạng thái hover để nền trở về “base” của toolbar ngay lập tức
+    setHoverUnit(null);
     setActiveUnit(unit);
     if (unit === "All") {
       setFilteredData(data);
@@ -131,8 +164,64 @@ const App = () => {
 
   const resultCount = filteredData.length;
 
+  const baseBgUrl = getBgUrl(activeUnit);
+  const selectedBgUrl = selectedEvent ? getBgUrl(selectedEvent.Unit) : null;
+  const hoverBgUrl = hoverUnit ? getBgUrl(hoverUnit) : null;
+  const desiredBgUrl = selectedBgUrl || hoverBgUrl || baseBgUrl;
+
+  const preloadImage = useCallback((url) => {
+    // preload để tránh flash khi ảnh chưa kịp tải xong
+    return new Promise((resolve) => {
+      const img = new Image();
+      img.onload = () => resolve(true);
+      img.onerror = () => resolve(false);
+      img.src = url;
+    });
+  }, []);
+
+  // Sync giá trị đang hiển thị vào ref để tránh effect bị kích do setBg0/setBg1
+  useEffect(() => {
+    visibleBgUrlRef.current = bgTop === 0 ? bg0 : bg1;
+  }, [bgTop, bg0, bg1]);
+
+  useEffect(() => {
+    if (!desiredBgUrl) return;
+    if (visibleBgUrlRef.current === desiredBgUrl) return;
+
+    let cancelled = false;
+
+    (async () => {
+      await preloadImage(desiredBgUrl);
+      if (cancelled) return;
+
+      if (bgTop === 0) {
+        setBg1(desiredBgUrl);
+        requestAnimationFrame(() => setBgTop(1));
+      } else {
+        setBg0(desiredBgUrl);
+        requestAnimationFrame(() => setBgTop(0));
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [desiredBgUrl, bgTop, preloadImage]);
+
   return (
     <div className="page-root" onContextMenu={(e) => e.preventDefault()}>
+      <div className="bg-root" aria-hidden="true">
+        <div
+          className={`bg-layer ${bgTop === 0 ? "bg-layer--top" : ""}`}
+          style={{ backgroundImage: `url(${bg0})` }}
+        />
+        <div
+          className={`bg-layer ${bgTop === 1 ? "bg-layer--top" : ""}`}
+          style={{ backgroundImage: `url(${bg1})` }}
+        />
+        <div className="bg-overlay" />
+      </div>
+
       <div className="content-panel">
         <header className="site-top">
           <div className="top-banner" ref={topBannerRef}>
@@ -239,8 +328,28 @@ const App = () => {
                       ? String(item.STT)
                       : `${item.ImageLink}-${index}`
                   }
-                  onClick={() => setSelectedEvent(item)}
+                  onClick={() => {
+                    // Khi chọn logo mở popup, nền theo unit logo đó và khi tắt popup sẽ quay về nền “base” của toolbar
+                    setHoverUnit(null);
+                    setSelectedEvent(item);
+                  }}
                   aria-label={`${item.EventName} — xem chi tiết`}
+                  onMouseEnter={() => {
+                    if (selectedEvent) return;
+                    setHoverUnit(item.Unit);
+                  }}
+                  onMouseLeave={() => {
+                    if (selectedEvent) return;
+                    setHoverUnit(null);
+                  }}
+                  onFocus={() => {
+                    if (selectedEvent) return;
+                    setHoverUnit(item.Unit);
+                  }}
+                  onBlur={() => {
+                    if (selectedEvent) return;
+                    setHoverUnit(null);
+                  }}
                 >
                   <div className="image-container">
                     <img
