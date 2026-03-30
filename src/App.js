@@ -14,6 +14,7 @@ import logoVideo from './LogoUnit/Logo video.png';
 
 // === BACKGROUND (dynamic wallpaper) ===
 import bgDefault from "./bg/655065811_941741794924969_5766578969985938936_n.jpg";
+import bgVs from "./bg/vs_bg.png";
 import bgLn from "./bg/ln_bg.png";
 import bgMmj from "./bg/mmj_bg.png";
 import bgNiigo from "./bg/n25_bg.png";
@@ -64,7 +65,8 @@ const App = () => {
     // - i / n25 => niigo
     // - vs / all / mix => dùng nền mặc định
     if (!key) return bgDefault;
-    if (key === "vs" || key === "all" || key === "mix") return bgDefault;
+    if (key === "all" || key === "mix") return bgDefault;
+    if (key === "vs") return bgVs;
     if (key === "ln") return bgLn;
     if (key === "mmj") return bgMmj;
     if (key === "vbs") return bgVbs;
