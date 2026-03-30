@@ -1,7 +1,7 @@
 {
   "name": "event-collection",
   "version": "0.1.0",
-  "homepage": "https://eldlichlord2004.github.io/event-collection",
+  "homepage": ".",
   "private": true,
   "dependencies": {
     "@testing-library/dom": "^10.4.1",
