@@ -157,6 +157,9 @@ const unitLogos = {
 // ⭐ THỨ TỰ CỐ ĐỊNH: All đầu tiên, mix cuối cùng
 const UNIT_ORDER = ["All", "vs", "ln", "mmj", "vbs", "wxs", "niigo","Mix"];
 
+const SHEET_CSV_URL =
+  "https://docs.google.com/spreadsheets/d/e/2PACX-1vQZCwUxhLR9bE6QOK1g2tXQKzDeB1SqoqH95QDqBS5cbeY9_WQuGn8SfdWVibOa2CzrVkNYLkIiXCZ7/pub?gid=0&single=true&output=tsv";
+
 const App = () => {
   const [data, setData] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
@@ -170,9 +173,7 @@ const App = () => {
 
   const closeEventModal = useCallback(() => setSelectedEvent(null), []);
 
-  const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQZCwUxhLR9bE6QOK1g2tXQKzDeB1SqoqH95QDqBS5cbeY9_WQuGn8SfdWVibOa2CzrVkNYLkIiXCZ7/pub?gid=0&single=true&output=tsv";
-
-  const fetchData = () => {
+  const fetchData = useCallback(() => {
     console.log("Đang kiểm tra dữ liệu mới từ Google Sheet...");
     Papa.parse(SHEET_CSV_URL, {
       download: true,
@@ -202,7 +203,7 @@ const App = () => {
         console.error("Lỗi khi tải dữ liệu từ Google Sheet:", error);
       },
     });
-  };
+  }, [activeUnit]);
 
   useEffect(() => {
     fetchData();
@@ -210,7 +211,7 @@ const App = () => {
       fetchData();
     }, 300000);
     return () => clearInterval(interval);
-  }, [activeUnit]);
+  }, [fetchData]);
 
   useEffect(() => {
     const handleScroll = () => {
