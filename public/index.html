@@ -4,7 +4,10 @@
     <meta charset="utf-8" />
     <link rel="icon" href="%PUBLIC_URL%/muci.png" type="image/png" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#000000" />
+    <!-- Báo trang chỉ dùng theme sáng — hạn chế trình duyệt tự áp dark mode lên nội dung -->
+    <meta name="color-scheme" content="light" />
+    <meta name="theme-color" content="#c5d4ec" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#c5d4ec" media="(prefers-color-scheme: dark)" />
     <meta
       name="description"
       content="Bộ sưu tập logo sự kiện Project Sekai Vietsub — lọc theo unit, cập nhật từ Google Sheet."

@@ -1,3 +1,8 @@
+/* Ép giao diện sáng: trình duyệt không đổi màu nền/chữ theo system dark mode */
+html {
+  color-scheme: light only;
+}
+
 /* === Design tokens — PJSK-adjacent, editorial / product UI === */
 :root {
   --color-bg: #e8eef9;
