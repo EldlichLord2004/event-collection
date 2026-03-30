@@ -133,6 +133,7 @@ import React, { useState, useEffect, useRef, useCallback } from "react";
 import Papa from "papaparse";
 import "./App.css";
 import { EventDetailModal } from "./components/EventDetailModal";
+import { Analytics } from "@vercel/analytics/react";
 
 // === IMPORT LOGO ===
 import logoLn from './LogoUnit/ln.png';
@@ -395,6 +396,7 @@ const App = () => {
       {selectedEvent ? (
         <EventDetailModal event={selectedEvent} onClose={closeEventModal} />
       ) : null}
+      <Analytics />
     </div>
   );
 };
