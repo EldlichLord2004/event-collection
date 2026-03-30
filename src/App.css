@@ -15,7 +15,10 @@
   --radius-lg: 20px;
   --radius-md: 14px;
   --radius-pill: 999px;
+  /* UI (toolbar): DM Sans — Text tiếng Việt: Be Vietnam Pro + hệ thống có hỗ trợ VN */
   --font-sans: "DM Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-text: "Be Vietnam Pro", "Segoe UI", Roboto, "Noto Sans", system-ui,
+    -apple-system, sans-serif;
   /* Đủ rộng để 3–4 cột gallery trên desktop */
   --max-content: 1280px;
   --grid-card-min: 252px;
@@ -27,12 +30,13 @@
 /* ---- Base ---- */
 body {
   margin: 0;
-  font-family: var(--font-sans);
+  font-family: var(--font-text);
   min-height: 100vh;
   background-color: #c5d4ec;
   color: var(--color-text);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
@@ -178,6 +182,7 @@ img {
   background: transparent;
   border: none;
   color: var(--color-text);
+  font-family: var(--font-sans);
   font-size: 15px;
   font-weight: 600;
   letter-spacing: 0.02em;
@@ -485,9 +490,12 @@ img {
 
 .card-title {
   margin: 0;
+  font-family: var(--font-text);
   font-size: 15px;
   font-weight: 600;
   line-height: 1.45;
+  letter-spacing: normal;
+  word-spacing: normal;
   color: var(--color-text);
   display: -webkit-box;
   -webkit-line-clamp: 3;
