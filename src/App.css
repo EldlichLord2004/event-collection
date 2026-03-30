@@ -16,7 +16,9 @@
   --radius-md: 14px;
   --radius-pill: 999px;
   --font-sans: "DM Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
-  --max-content: 1120px;
+  /* Đủ rộng để 3–4 cột gallery trên desktop */
+  --max-content: 1280px;
+  --grid-card-min: 252px;
   /* Logo toolbar + lưới — chỉnh một chỗ nếu cần */
   --toolbar-logo-height: 32px;
   --toolbar-btn-height: 54px;
@@ -401,8 +403,11 @@ img {
 
 .collection-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(min(100%, 360px), 1fr));
-  gap: 28px;
+  grid-template-columns: repeat(
+    auto-fill,
+    minmax(min(100%, var(--grid-card-min)), 1fr)
+  );
+  gap: 22px;
   animation: collection-grid-in 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
