@@ -1,8 +1,9 @@
 import { render, screen } from '@testing-library/react';
 import App from './App';
 
-test('renders learn react link', () => {
+test('renders app with unit filter buttons', () => {
   render(<App />);
-  const linkElement = screen.getByText(/learn react/i);
-  expect(linkElement).toBeInTheDocument();
+  // Check if "All" button exists (this is always present)
+  const allButton = screen.getAllByText('All')[0];
+  expect(allButton).toBeInTheDocument();
 });
